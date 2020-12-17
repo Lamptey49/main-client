@@ -1,0 +1,53 @@
+#sitewrapper {
+    position: absolute;
+    bottom: 8px;
+    right: 0px;
+    width: 100%;
+}
+
+.footer {
+    background-color:#ACD523;
+    margin: 0px auto;
+    padding: 20px 0px 20px 0px;
+}
+
+.butt {
+    color: #ACD523;
+}
+svg{
+    height:30px;
+    cursor:pointer;
+}
+Link{
+    text-decoration: none;
+}
+.btngroup{
+    display: flex;
+    justify-content: space-between;
+}
+.root{
+    flex-grow: 1;
+}
+.card-center{
+    align-self: center;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0, 0.2);
+    padding: 20px;
+    /* margin: 10px; */
+    color:#333;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin:auto;
+    max-width:600px;
+}
+.card-center h2{
+    text-align: center;
+    font-size: 2rem;
+}
+.card-center .img-center{
+    align-self: center;
+    margin-right: 90px;
+}
