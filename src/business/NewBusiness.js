@@ -4,14 +4,13 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import Button from '@material-ui/core/Button'
 import FileUpload from '@material-ui/icons/AddPhotoAlternate'
-// import auth from './../auth/auth-helper'
+import auth from './../auth/auth-helper'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Icon from '@material-ui/core/Icon'
 import { makeStyles } from '@material-ui/core/styles'
 import {create} from './api-business.js'
 import {Link, Redirect} from 'react-router-dom'
-import {   FormGroup   } from 'reactstrap';
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Dialog from '@material-ui/core/Dialog'
@@ -57,16 +56,6 @@ export default function NewBusiness(){
     const classes = useStyles()
     const [values, setValues] = useState({
         currentStep:1,
-        firstname: '',
-        lastname:'',
-        email:'',
-        password:'',
-        country:'',
-        region:'',
-        suburb:'',
-        zip:'',
-        phone_one:'',
-        phone_two:'',
         business_name:'',
         region_of_business:'',
         city_of_business:'',
@@ -82,42 +71,37 @@ export default function NewBusiness(){
         error: '',
         open:false
     })
+    const jwt = auth.isAuthenticated();
+
     const handleChange = name => event => {
-        const value = name === 'image'
+        const value = name === 'business_certificate' || name === 'identity_card_front' || name === 'identity_card_back'
           ? event.target.files[0]
           : event.target.value
         setValues({...values, [name]: value })
 
-        // setValues({ ...values, [name]: event.target.values})
     }
     const handleCheck = (event, checked) => {
         setValues({...values, 'is_business_registered': checked})
       }
     const clickSubmit = () => {
-        let businessData  = {
-            firstname : values.firstname || undefined,
-            lastname : values.lastname || undefined,
-            email : values.email || undefined,
-            password: values.password || undefined,
-            country : values.country || undefined,
-            region : values.region || undefined,
-            suburb : values.suburb || undefined,
-            zip: values.zip || undefined,
-            phone_one: values.phone_one   || undefined ,                     
-            phone_two: values.phone_two || undefined,
-            business_name: values.business_name || undefined,
-            region_of_business: values.region_of_business || undefined,
-            city_of_business: values.city_of_business || undefined,
-            business_mobile: values.business_mobile || undefined,
-            business_mobile_contact : values.business_mobile_contact|| undefined,
-            country_of_business : values.country_of_business || undefined,
-            is_business_registered: values.is_business_registered || undefined,
-        }
-
+        const businessData  = new FormData()
+        values.business_name && businessData.append('business_name', values.business_name)
+        values.region_of_business && businessData.append('region_of_business', values.region_of_business)
+        values.city_of_business && businessData.append('city_of_business', values.city_of_business)
+        values.business_mobile && businessData.append('business_mobile', values.business_mobile)
+        values.business_mobile_contact && businessData.append('business_mobile_contact', values.business_mobile_contact)
+        values.country_of_business && businessData.append('country_of_business', values.country_of_business)
+        values.business_email && businessData.append('business_email', values.business_email)
+        values.is_business_registered && businessData.append('is_business_registered', values.is_business_registered)
+        values.business_certificate && businessData.append('business_certificate', values.business_certificate)
+        values.identity_card_front && businessData.append('identity_card_front', values.identity_card_front)
+        values.identity_card_back && businessData.append('identity_card_back', values.identity_card_back)
         create({
-            businessData
-        }).then((data) => {
-            if(data.error){
+           userId: jwt.user._id
+        }, {
+            t: jwt.token
+        }, businessData).then((data) => {
+            if(data){
                 setValues({ ...values, error: data.error})
             }
             else{
@@ -150,69 +134,69 @@ export default function NewBusiness(){
     }
     const nextButton = () =>{
         let currentStep = values.currentStep
-        if(currentStep < 3){
+        if(currentStep < 2){
             return (
                 <Button color='primary' className='float-right' type='button' onClick={next}>Next</Button>
             )
         }
         return null;
     }
-    const UserInfo = ()=>{
-        if (values.currentStep !== 1) {
-            return null
-          } 
-          return(
-              <div>
-                  <Typography component='h3'>Personal User Information</Typography>
+    // const UserInfo = ()=>{
+    //     if (values.currentStep !== 1) {
+    //         return null
+    //       } 
+    //       return(
+    //           <div>
+    //               <Typography component='h3'>Personal User Information</Typography>
                 
-                <TextField type="text" id="firstname" name="firstname" label='Firstname' className={classes.textField}
-                            value={values.firstname}
-                            onChange={handleChange('firstname')} required />
+    //             <TextField type="text" id="firstname" name="firstname" label='Firstname' className={classes.textField}
+    //                         value={values.firstname}
+    //                         onChange={handleChange('firstname')} required />
                
                
-                <TextField type="text" id="lastname" name="lastname" label='Lastname' className={classes.textField}
-                            value={values.lastname}
-                            onChange={handleChange('lastname')} required />
+    //             <TextField type="text" id="lastname" name="lastname" label='Lastname' className={classes.textField}
+    //                         value={values.lastname}
+    //                         onChange={handleChange('lastname')} required />
                
               
-                <TextField type="email" id="email" name="email" label='Email' className={classes.textField}
-                            value={values.email}
-                            onChange={handleChange('email')} required />
+    //             <TextField type="email" id="email" name="email" label='Email' className={classes.textField}
+    //                         value={values.email}
+    //                         onChange={handleChange('email')} required />
                
                 
-                <TextField type="password" id="password" name="password" label='Password' className={classes.textField}
-                            value={values.password}
-                            onChange={handleChange('password')} required />
+    //             <TextField type="password" id="password" name="password" label='Password' className={classes.textField}
+    //                         value={values.password}
+    //                         onChange={handleChange('password')} required />
                 
-                <TextField type="text" id="country" name="country" label='Country' className={classes.textField}
-                            value={values.country}
-                            onChange={handleChange('country')} required />
+    //             <TextField type="text" id="country" name="country" label='Country' className={classes.textField}
+    //                         value={values.country}
+    //                         onChange={handleChange('country')} required />
                 
-                <TextField type="text" id="region" name="region" label='Region' className={classes.textField}
-                            value={values.region}
-                            onChange={handleChange('region')} required />
+    //             <TextField type="text" id="region" name="region" label='Region' className={classes.textField}
+    //                         value={values.region}
+    //                         onChange={handleChange('region')} required />
               
-                    <TextField type="text" id="suburb" name="suburb" label='Suburb' className={classes.textField}
-                            value={values.suburb}
-                            onChange={handleChange('suburb')} required />
+    //                 <TextField type="text" id="suburb" name="suburb" label='Suburb' className={classes.textField}
+    //                         value={values.suburb}
+    //                         onChange={handleChange('suburb')} required />
                
-                    <TextField type="text" id="zip" name="zip" label='Zip' className={classes.textField}
-                            value={values.zip}
-                            onChange={handleChange('zip')}  />
+    //                 <TextField type="text" id="zip" name="zip" label='Zip' className={classes.textField}
+    //                         value={values.zip}
+    //                         onChange={handleChange('zip')}  />
                
-                    <TextField type="text" id="phone_one" name="phone_one" label='Contact' className={classes.textField}
-                            value={values.phone_one}
-                            onChange={handleChange('phone_one')} required />
+    //                 <TextField type="text" id="phone_one" name="phone_one" label='Contact' className={classes.textField}
+    //                         value={values.phone_one}
+    //                         onChange={handleChange('phone_one')} required />
                 
-                    <TextField type="text" id="phone_two" name="phone_two" label='Other Phone' className={classes.textField}
-                            value={values.phone_two}
-                            onChange={handleChange('phone_two')}  />
+    //                 <TextField type="text" id="phone_two" name="phone_two" label='Other Phone' className={classes.textField}
+    //                         value={values.phone_two}
+    //                         onChange={handleChange('phone_two')}  />
                
-              </div>
-          );
-    }
+    //           </div>
+    //       );
+    // }
     const BusinessInfo = () =>{
-        if (values.currentStep !== 2) {
+        if (values.currentStep !== 1) {
             return null
           } 
           return(
@@ -221,7 +205,8 @@ export default function NewBusiness(){
                 
                 <TextField type="text" id="business_name" name="business_name" label='Business Name' className={classes.textField}
                             value={values.business_name}
-                            onChange={handleChange('business_name')} required />
+                            onChange={handleChange('business_name')}
+                             required />
                 
                
                 <TextField type="text" id="region_of_business" name="region_of_business" label='Region' className={classes.textField}
@@ -231,7 +216,7 @@ export default function NewBusiness(){
                
                     <TextField type="text" id="city_of_business" name="city_of_business" label='City' className={classes.textField}
                             value={values.city_of_business}
-                            onChange={handleChange('region_of_business')} required />
+                            onChange={handleChange('city_of_business')} required />
                 
                 
                     <TextField type="text" id="business_mobile" name="business_mobile" label='Business Contact' className={classes.textField}
@@ -241,12 +226,12 @@ export default function NewBusiness(){
                 
                     <TextField type="text" id="business_mobile_contact" name="business_mobile_contact" label='Business Alt Contact' className={classes.textField}
                             value={values.business_mobile_contact}
-                            onChange={handleChange('region_of_business')}  />
+                            onChange={handleChange('business_mobile_contact')}  />
                 
                 
                     <TextField type="text" id="country_of_business" name="country_of_business" label='Country' className={classes.textField}
                             value={values.country_of_business}
-                            onChange={handleChange('region_of_business')} required />
+                            onChange={handleChange('country_of_business')} required />
                
                 
                     <TextField type="email" id="business_email" name="business_email" label='Business Email' className={classes.textField}
@@ -256,7 +241,7 @@ export default function NewBusiness(){
                 </div>
           )}
     const BusinessDocument = () =>{
-        if (values.currentStep !== 3) {
+        if (values.currentStep !== 2) {
             return null
           } 
         return (
@@ -293,14 +278,15 @@ export default function NewBusiness(){
                 {
                     !values.is_business_registered && (
                         <div>
-                            <input accept="image/*" onChange={handleChange('business_certificate')} className={classes.input} id="icon-button-file" type="file" />
+                            <input accept="image/*" onChange={handleChange('identity_card_front')} className={classes.input} id="icon-button-file" type="file" />
                             <label htmlFor="icon-button-file">
                                 <Button variant="contained" color="secondary" component="span">
                                 Upload an Identity Card Front
                                 <FileUpload/>
                                 </Button>
                             </label> <span className={classes.filename}>{values.identity_card_front ? values.identity_card_front.name : ''}</span><br/>
-                            <input accept="image/*" onChange={handleChange('business_certificate')} className={classes.input} id="icon-button-file" type="file" />
+                            
+                            <input accept="image/*" onChange={handleChange('identity_card_front')} className={classes.input} id="icon-button-file" type="file" />
                             <label htmlFor="icon-button-file">
                                 <Button variant="contained" color="secondary" component="span">
                                 Upload an Identity Card Back
@@ -336,7 +322,7 @@ export default function NewBusiness(){
                 <Typography type='headline' component='h2' className={classes.title}>New Shop Registration</Typography>
                 <p>Step {values.currentStep}</p>
                 <br />
-                <UserInfo />
+                {/* <UserInfo /> */}
                 <BusinessInfo />
                 <BusinessDocument />
                 {prevButton()}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect} from 'react';
+import PropTypes from 'prop-types'
 import { fade, makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -17,9 +18,9 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import auth from './../auth/auth-helper'
 import {Link, withRouter} from 'react-router-dom'
 import logo from './../assets/images/kik.png';
-import Search from './../product/Search'
-import { listCategories } from './../product/api-product'
-
+// import Search from './../product/Search'
+import {  list, listCategories } from './../product/api-product'
+import Products from './../product/Products'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -103,6 +104,9 @@ const isPartActive = (history, path) => {
       return {color: '#bef67a'}
     
 }
+/**
+ * @todo implement User role on the appbar
+ */
 
 
 const Header = withRouter(({history}) =>{
@@ -119,6 +123,37 @@ const Header = withRouter(({history}) =>{
     }
   }, [])
   
+
+  const [values, setValues] = useState({
+    category: '',
+    search: '',
+    results: [],
+    searched: false
+    })
+    const handleChange = name => event => {
+      setValues({
+        ...values, [name]: event.target.value,
+      })
+    }
+    const search = () => {
+      if(values.search){
+        list({
+          search: values.search || undefined, category: values.category
+        }).then((data) => {
+          if (data.error) {
+            console.log(data.error)
+          } else {
+            setValues({...values, results: data, searched:true})
+          }
+        })
+      }
+    }
+    const enterKey = (event) => {
+      if(event.keyCode === 13){
+        event.preventDefault()
+        search()
+      }
+    }
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -254,11 +289,13 @@ const Header = withRouter(({history}) =>{
             </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
-                <SearchIcon />
+                <SearchIcon onClick={search} />
                 
               </div>
               <InputBase
                 placeholder="Search…"
+                onKeyDown={enterKey}
+                onChange={handleChange('search')}
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -278,22 +315,18 @@ const Header = withRouter(({history}) =>{
                 <Button style={isActive(history, "/auth/signin")}>Sign In
                 </Button>
               </Link>
-              <Link to="/business/register/new">
-                <Button style={isActive(history, "/business/register/new")}>Connect to Kiriikou
-                </Button>
-              </Link>
+              
             </span>)
           }
           {
                 auth.isAuthenticated() && (<span>
                   {auth.isAuthenticated().user.seller && (<Link to="/seller/shops"><Button style={isPartActive(history, "/seller/")}>My Shops</Button></Link>)}
+                  
                   <Link to={"/user/" + auth.isAuthenticated().user._id}>
-                    <Button style={isActive(history, "/user/" + auth.isAuthenticated().user._id)}>Profile</Button>
+                    <Button style={isActive(history, "/user/" + auth.isAuthenticated().user._id)}>{auth.isAuthenticated().user.name}</Button>
                   </Link>
-                  <Button color="inherit" onClick={() => {
-                      auth.clearJWT(() => history.push('/'))
-                    }}>Sign out</Button>
-                     <IconButton
+                  
+                     {/* <IconButton
                       edge="end"
                       aria-label="account of current user"
                       aria-controls={menuId}
@@ -303,7 +336,14 @@ const Header = withRouter(({history}) =>{
                     >
                       <AccountCircle />
                       
-                    </IconButton>
+                    </IconButton> */}
+                    <Link to="/business/register/new">
+                      <Button style={isActive(history, "/business/register/new")}>Connect to Kiriikou
+                      </Button>
+                    </Link>
+                    <Button color="inherit" onClick={() => {
+                      auth.clearJWT(() => history.push('/'))
+                    }}>Sign out</Button>
                 </span>)
               }
          

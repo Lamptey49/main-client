@@ -49,7 +49,9 @@ function SignUp() {
         email: '',
         password: '',
         open:false,
-        error: ''
+        error: '',
+        role: 'basic', 
+        phone: ''
     })
     const handleChange = name => event => {
         setValues({ ...values, [name]: event.target.values})
@@ -59,7 +61,9 @@ function SignUp() {
         const user = {
             name: values.name || undefined,
             email: values.email || undefined,
-            password: values.password || undefined
+            password: values.password || undefined,
+            role: values.role || undefined,
+            phone: values.phone || undefined
         }
         create(user).then((data) => {
             if(data){
@@ -90,6 +94,12 @@ function SignUp() {
                         name="password"
                         value={values.password}
                         onChange={handleChange('password')} required />
+                </FormGroup>
+                <FormGroup>
+                    <TextField type="text" id="phone" label='Phone' className={classes.textField}
+                        name="phone"
+                        value={values.phone}
+                        onChange={handleChange('phone')} required />
                 </FormGroup>
                 
                 <br />

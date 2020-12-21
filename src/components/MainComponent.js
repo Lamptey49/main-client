@@ -5,11 +5,14 @@ import Signin from './../auth/Signin'
 import Header from './HeaderComponent';
 import SignUp from './../user/SignUp'
 import NewBusiness from '../business/NewBusiness';
+// import BusinessNavbar from './.business/BusinessNavbar';
+
 const Main = ()=> {
 
     return (
       <div>
         <Header />
+        {/* <BusinessNavbar /> */}
       <Switch>
             <Route exact path='/' component={Home} />
             <Route path='/auth/signin' component={Signin}/>

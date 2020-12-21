@@ -1,14 +1,15 @@
 #sitewrapper {
-    position: absolute;
-    bottom: 8px;
+    /* position: absolute; */
+    /* bottom: 8px; */
     right: 0px;
     width: 100%;
 }
 
 .footer {
-    background-color:#ACD523;
+    background-color:#213A57;
     margin: 0px auto;
-    padding: 20px 0px 20px 0px;
+    color:#fff;
+    /* padding: 20px 0px 20px 0px; */
 }
 
 .butt {

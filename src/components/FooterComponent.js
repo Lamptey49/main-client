@@ -31,7 +31,7 @@ function Footer() {
             </div>
             <div className="row justify-content-center">             
                 <div className="col-auto">
-                    <p>© Copyright { new Date().getUTCFullYear() } Kiriikou</p>
+                    <p>&copy; Copyright { new Date().getUTCFullYear() } Kiriikou</p>
                 </div>
             </div>
         </div>
