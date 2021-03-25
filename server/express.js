@@ -24,7 +24,6 @@ import ReactDOMServer from 'react-dom/server'
 
 import MainRouter from './../client/MainRouter'
 import {  StaticRouter , Switch} from 'react-router-dom'
-import config from './../config/config'
 import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
 import theme from './../client/theme'
 
